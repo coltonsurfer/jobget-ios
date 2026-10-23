@@ -181,6 +181,7 @@ struct AppliedSheet: View {
                     .font(.subheadline)
                     .foregroundStyle(Color.jgMuted)
                     .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             .padding(.horizontal, 24)
 
