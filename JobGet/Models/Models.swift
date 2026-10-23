@@ -134,7 +134,7 @@ struct Conversation: Identifiable {
     var lastMessage: ChatMessage? { messages.last }
 }
 
-struct Shift: Identifiable {
+struct Shift: Identifiable, Equatable {
     let id = UUID()
     let date: Date
     let start: DateComponents
