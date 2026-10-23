@@ -72,6 +72,9 @@ enum MockData {
             schedule: ["Mon/Wed/Fri 4:45a–10a"], hiringManager: "Kevin Park"),
     ]
 
+    static let teamThreadName = "South Congress Team"
+    static let managerName = "Maya Chen"
+
     static func conversations(now: Date = .now) -> [Conversation] {
         [
             Conversation(
@@ -85,6 +88,18 @@ enum MockData {
                 unreadCount: 1,
                 quickReplies: ["Looks good!", "Can I pick up a shift?", "I have a conflict Friday"],
                 pendingReplies: ["Great—see you Thursday!", "I'll take a look and get back to you.", "Sounds good, thanks Jordan."]
+            ),
+            Conversation(
+                counterpartName: teamThreadName, counterpartRole: "5 teammates", company: "Pinewood Coffee Roasters",
+                logoSymbol: "person.3.fill", logoColor: Color(hex: 0x5B3DF5),
+                messages: [
+                    ChatMessage(text: "Elena Vargas posted Sun 8:00 AM – 2:00 PM for trade", isFromMe: false, date: now.addingTimeInterval(-3600 * 30), kind: .system),
+                    ChatMessage(text: "Heads up: new oat milk arrives Thursday, taste it before service 🙌", isFromMe: false, date: now.addingTimeInterval(-3600 * 26)),
+                    ChatMessage(text: "Anyone able to grab my Sunday morning? Open on the Cover Board.", isFromMe: false, date: now.addingTimeInterval(-3600 * 5)),
+                ],
+                unreadCount: 0,
+                quickReplies: ["I can take it!", "Can't this time, sorry", "Who's closing tonight?"],
+                pendingReplies: ["You're the best, Jordan 🙏", "Thanks for jumping in!", "Appreciate you!"]
             ),
             Conversation(
                 counterpartName: "Luis Ortega", counterpartRole: "Owner", company: "Sunrise Diner",
@@ -128,6 +143,9 @@ enum MockData {
         Teammate(name: "Nia Thompson", role: "Barista", color: Color(hex: 0xFF8C1A), isManager: false),
     ]
 
+    /// Scheduled hours per coworker, used for the soft weekly-hours flag on approval cards.
+    static let coworkerHoursThisWeek: [String: Double] = ["Sam Okafor": 34, "Elena Vargas": 24, "Tyler Brooks": 28, "Nia Thompson": 19]
+
     static func shifts(now: Date = .now) -> [Shift] {
         let cal = Calendar.current
         let today = cal.startOfDay(for: now)
@@ -140,5 +158,20 @@ enum MockData {
             Shift(date: day(4), start: .init(hour: 17), end: .init(hour: 22), role: "Barista · Closer", location: location, manager: "Maya Chen", coworkers: ["Elena Vargas"]),
             Shift(date: day(6), start: .init(hour: 7), end: .init(hour: 13), role: "Barista", location: location, manager: "Maya Chen", coworkers: ["Tyler Brooks", "Nia Thompson"]),
         ]
+    }
+
+    /// Coworker shifts already posted to the Cover Board (same location only).
+    static func openCoverBoard(now: Date = .now) -> (shifts: [Shift], trades: [ShiftTrade]) {
+        let cal = Calendar.current
+        let today = cal.startOfDay(for: now)
+        func day(_ offset: Int) -> Date { cal.date(byAdding: .day, value: offset, to: today) ?? today }
+        let location = "Pinewood Coffee · South Congress"
+        let elena = Shift(date: day(2), start: .init(hour: 8), end: .init(hour: 14), role: "Barista", location: location, manager: managerName, coworkers: ["Sam Okafor"], owner: "Elena Vargas")
+        let tyler = Shift(date: day(5), start: .init(hour: 12), end: .init(hour: 18), role: "Barista", location: location, manager: managerName, coworkers: ["Nia Thompson"], owner: "Tyler Brooks")
+        let trades = [
+            ShiftTrade(shiftID: elena.id, posterName: "Elena Vargas", mode: .giveAway, note: "Family thing Sunday morning — would love a hand 🙏", status: .posted, postedAt: now.addingTimeInterval(-3600 * 30)),
+            ShiftTrade(shiftID: tyler.id, posterName: "Tyler Brooks", mode: .swap, note: "Can swap for any weekday evening", swapPreference: "Weekday evening", status: .posted, postedAt: now.addingTimeInterval(-3600 * 9)),
+        ]
+        return ([elena, tyler], trades)
     }
 }
