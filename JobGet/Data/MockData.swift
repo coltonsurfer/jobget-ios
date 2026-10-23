@@ -143,6 +143,9 @@ enum MockData {
         Teammate(name: "Nia Thompson", role: "Barista", color: Color(hex: 0xFF8C1A), isManager: false),
     ]
 
+    /// Scheduled hours per coworker, used for the soft weekly-hours flag on approval cards.
+    static let coworkerHoursThisWeek: [String: Double] = ["Sam Okafor": 34, "Elena Vargas": 24, "Tyler Brooks": 28, "Nia Thompson": 19]
+
     static func shifts(now: Date = .now) -> [Shift] {
         let cal = Calendar.current
         let today = cal.startOfDay(for: now)

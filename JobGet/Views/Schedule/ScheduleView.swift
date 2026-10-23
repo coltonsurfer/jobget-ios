@@ -240,7 +240,7 @@ struct ShiftCard: View {
     var onTrade: () -> Void = {}
 
     private var trade: ShiftTrade? { state.latestTrade(for: shift) }
-    private var isMine: Bool { shift.owner == state.profile.name || trade?.posterName == state.profile.name }
+    private var iPosted: Bool { trade?.posterName == state.profile.name }
     private var covered: Bool { trade?.status == .approved && trade?.posterName == state.profile.name }
     private var pending: Bool { trade?.status == .claimed && trade?.claimerName == state.profile.name }
     private var tradable: Bool { state.canTrade(shift) }
@@ -268,7 +268,7 @@ struct ShiftCard: View {
                     Label(shift.location, systemImage: "mappin").font(.caption).foregroundStyle(Color.jgMuted)
                     if let trade, trade.status != .withdrawn {
                         HStack(spacing: 8) {
-                            TradeStatusPill(trade: trade, isMine: isMine)
+                            TradeStatusPill(trade: trade, isMine: iPosted)
                             if covered, let claimer = trade.claimerName {
                                 Text("by \(claimer)").font(.caption).foregroundStyle(Color.jgMuted)
                             } else if pending {
@@ -293,8 +293,17 @@ struct ShiftCard: View {
             .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(style: StrokeStyle(lineWidth: 1.5, dash: pending ? [6, 4] : [])).foregroundStyle(pending ? Color.jgOrange : Color.clear))
             .opacity(covered ? 0.6 : 1)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(CardButtonStyle())
         .disabled(!tradable)
         .accessibilityIdentifier("shift-card")
+    }
+}
+
+/// Card-shaped button that presses without the system's disabled dimming (status is conveyed by the pill instead).
+struct CardButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.985 : 1)
+            .animation(.easeOut(duration: 0.12), value: configuration.isPressed)
     }
 }

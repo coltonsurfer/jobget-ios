@@ -241,7 +241,7 @@ final class AppState {
     }
 
     func projectedHours(for name: String, adding shift: Shift) -> Double {
-        let current = name == profile.name ? hoursThisWeek : Double.random(in: 22...30).rounded()
+        let current = name == profile.name ? hoursThisWeek : (MockData.coworkerHoursThisWeek[name] ?? 24)
         return current + shift.hours
     }
 
