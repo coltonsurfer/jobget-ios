@@ -307,9 +307,7 @@ final class AppState {
         trades[index].claimerName = claimer
         trades[index].status = .claimed
         if trades[index].mode == .swap {
-            let offer = swapOffer(from: claimer, for: shift)
-            shifts.append(offer)
-            trades[index].swapOfferID = offer.id
+            trades[index].swapOffer = swapOffer(from: claimer, for: shift)
         }
         let mine = claimer == profile.name
         let first = claimer.split(separator: " ").first.map(String.init) ?? claimer
@@ -329,7 +327,13 @@ final class AppState {
         }
     }
 
+    /// The shift the claimer hands back in a swap: one of my own tradable shifts when I'm the claimer,
+    /// otherwise a generated one on a day I'm free (coworker schedules aren't modelled).
     private func swapOffer(from claimer: String, for shift: Shift) -> Shift {
+        if claimer == profile.name,
+           let mine = myShifts.sorted(by: { $0.startDate < $1.startDate }).first(where: { $0.id != shift.id && canTrade($0) }) {
+            return mine
+        }
         let cal = Calendar.current
         let today = cal.startOfDay(for: .now)
         let taken = Set(myShifts.map { cal.startOfDay(for: $0.date) })
@@ -356,11 +360,14 @@ final class AppState {
         if approved {
             shifts[shiftIndex].owner = claimer
             shifts[shiftIndex].coworkers.removeAll { $0 == claimer }
-            if let offerID = trade.swapOfferID, let offerIndex = shifts.firstIndex(where: { $0.id == offerID }) {
-                shifts[offerIndex].owner = poster
+            if var offer = trade.swapOffer {
+                offer.owner = poster
+                if let offerIndex = shifts.firstIndex(where: { $0.id == offer.id }) {
+                    shifts[offerIndex] = offer
+                } else {
+                    shifts.append(offer)
+                }
             }
-        } else if let offerID = trade.swapOfferID {
-            shifts.removeAll { $0.id == offerID }
         }
 
         let outcome = approved ? "approved" : "declined"

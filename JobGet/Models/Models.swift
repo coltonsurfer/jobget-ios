@@ -188,8 +188,8 @@ struct ShiftTrade: Identifiable, Equatable {
     let note: String
     var swapPreference: String?
     var claimerName: String?
-    /// For swaps: the shift the claimer gives the poster in return. Added to the poster's schedule on approval.
-    var swapOfferID: UUID?
+    /// For swaps: the shift the claimer gives the poster in return. Transferred to the poster only on approval.
+    var swapOffer: Shift?
     var status: TradeStatus
     var postedAt: Date = .now
     var decidedAt: Date?

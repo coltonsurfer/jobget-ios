@@ -135,7 +135,7 @@ struct TradeRequestCard: View {
                     flag("Role match · \(shift.role)", ok: true)
                     flag(String(format: "%@: %.0f → %.0f hrs this week", firstName(claimer), projected - shift.hours, projected), ok: !overCap)
                     flag("Same location · \(state.profile.currentLocation)", ok: true)
-                    if trade.mode == .swap, let offerID = trade.swapOfferID, let offer = state.shift(id: offerID) {
+                    if trade.mode == .swap, let offer = trade.swapOffer {
                         flag("Swap · \(firstName(claimer)) gives \(offer.shortLabel)", ok: true)
                     }
                 }
