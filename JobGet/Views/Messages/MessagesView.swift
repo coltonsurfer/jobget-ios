@@ -80,6 +80,8 @@ struct ConversationRow: View {
         guard let last = conversation.lastMessage else { return "" }
         switch last.kind {
         case .interview(let day, let time): return "Interview confirmed · \(day) at \(time)"
+        case .shiftTrade: return "Shift trade posted"
+        case .tradeRequest: return "Trade request · awaiting approval"
         case .system: return last.text
         case .text: return last.isFromMe ? "You: \(last.text)" : last.text
         }

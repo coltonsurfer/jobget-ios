@@ -190,6 +190,10 @@ struct MessageBubble: View {
             .background(Color.white, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
             .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).stroke(Color.jgGreen.opacity(0.4)))
             .frame(maxWidth: .infinity, alignment: .leading)
+        case .shiftTrade(let tradeID):
+            ShiftTradeCard(tradeID: tradeID)
+        case .tradeRequest(let tradeID):
+            TradeRequestCard(tradeID: tradeID, inChat: true)
         case .text:
             VStack(alignment: message.isFromMe ? .trailing : .leading, spacing: 3) {
                 Text(message.text)

@@ -22,6 +22,8 @@ extension Color {
     static let jgMuted = Color(hex: 0x6F6B8A)
     static let jgSurface = Color(hex: 0xF5F4FA)
     static let jgLine = Color(hex: 0xE6E3F2)
+    static let jgRed = Color(hex: 0xD93A3A)
+    static let jgRedSoft = Color(hex: 0xFCE9E9)
 }
 
 struct CardStyle: ViewModifier {
