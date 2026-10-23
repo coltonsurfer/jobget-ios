@@ -1,0 +1,13 @@
+# Xcode
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+xcuserdata/
+DerivedData/
+build/
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+.DS_Store
+# The project is generated from project.yml with XcodeGen
+JobGet.xcodeproj/
